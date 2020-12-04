@@ -41,7 +41,7 @@ class ModelRepository:
     def dump(self, fn):
         return jldump(self, fn)
 
-def get_model_above_threshold(X, y, r2_threshold, test_size=None):
+def get_model_above_threshold(X, y, r2_threshold, test_size=None, verbose=False):
     while True:
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
         _regr = LinearRegression()
@@ -51,6 +51,9 @@ def get_model_above_threshold(X, y, r2_threshold, test_size=None):
         y_pred = _regr.predict(X_test)
 
         _r2_score = r2_score(y_test, y_pred)
+        
+        if verbose:
+            print("r2 score: %.3f" % (_r2_score))
 
         if _r2_score < r2_threshold:
             continue
