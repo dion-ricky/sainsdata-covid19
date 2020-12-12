@@ -19,6 +19,14 @@ class ModelRepository:
         return r2_score(
             self.__y_test, self.__y_pred
         )
+    
+    def mean_squared_error(self):
+        return mean_squared_error(
+            self.__y_test, self.__y_pred
+        )
+    
+    def rmse(self):
+        return math.sqrt(self.mean_squared_error())
         
     def predict(self, i):
         return self.__regr.predict(i)
@@ -34,6 +42,9 @@ class ModelRepository:
     
     def get_y_test(self):
         return self.__y_test
+    
+    def get_y_pred(self):
+        return self.__y_pred
     
     def get_model(self):
         return self.__regr

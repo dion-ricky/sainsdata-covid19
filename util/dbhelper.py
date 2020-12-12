@@ -73,6 +73,40 @@ class DbHelper:
 
         return dbconn.execute(sql)
     
+    def diff_lead_cum_confirmed(self, date: str, sr1_code: str, ndays: int):
+        sql = """
+        SELECT DIFF_NDAYS_AFTER
+        FROM (
+            SELECT
+                DATE, SUBREGION1_CODE,
+                LEAD(CUMULATIVE_CONFIRMED, %d) OVER (PARTITION BY SUBREGION1_CODE ORDER BY DATE) - CUMULATIVE_CONFIRMED AS DIFF_NDAYS_AFTER
+            FROM
+                COVID19_OPEN_DATA cod
+        )
+        WHERE DATE = '%s' AND SUBREGION1_CODE = '%s'
+        """ % (ndays, date, sr1_code)
+
+        dbconn = self.__dbconn
+
+        return dbconn.execute(sql)
+    
+    def diff_lead_cum_confirmed_date_range(self, start_date: str, end_date: str, sr1_code: str, ndays: int):
+        sql = """
+        SELECT DIFF_NDAYS_AFTER
+        FROM (
+            SELECT
+                DATE, SUBREGION1_CODE,
+                LEAD(CUMULATIVE_CONFIRMED, %d) OVER (PARTITION BY SUBREGION1_CODE ORDER BY DATE) - CUMULATIVE_CONFIRMED AS DIFF_NDAYS_AFTER
+            FROM
+                COVID19_OPEN_DATA cod
+        )
+        WHERE DATE BETWEEN '%s' AND '%s' AND SUBREGION1_CODE = '%s'
+        """ % (ndays, start_date, end_date, sr1_code)
+
+        dbconn = self.__dbconn
+
+        return dbconn.execute(sql)
+    
     def get_connection(self):
         return self.__dbconn
     
